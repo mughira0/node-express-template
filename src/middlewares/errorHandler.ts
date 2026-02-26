@@ -20,7 +20,7 @@ export function errorHandler(
     const response: ErrorResponse = {
       success: false,
       message: err.message,
-      stack: err.stack,
+      // stack: err.stack,
     };
     res.status(err.statusCode).json(response);
     return;
@@ -29,7 +29,7 @@ export function errorHandler(
   const response: ErrorResponse = {
     success: false,
     message: err.message ?? "Internal server error",
-    stack: err.stack,
+    // stack: err.stack,
   };
 
   res.status(500).json(response);

@@ -3,10 +3,12 @@ import { requestLogger } from "./middlewares/requestLogger";
 import { notFoundHandler } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/errorHandler";
 import routes from "./routes";
+import cors from "cors";
 
 export function createApp(): Application {
   const app = express();
 
+  app.use(cors());
   // ── Body parsers ──────────────────────────────────────────────────────────
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

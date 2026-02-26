@@ -1,4 +1,5 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
+import { ROLES } from "../constants";
 import { IUser } from "../types/user.types";
 
 const userSchema = new Schema<IUser>(
@@ -23,12 +24,17 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ROLES,
       default: "user",
     },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    photo: {
+      type: String,
+      required: false,
+      default: "",
     },
   },
   {

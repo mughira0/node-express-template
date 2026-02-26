@@ -3,8 +3,11 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: "user" | "admin";
+  role: TRole;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  photo?: string;
 }
+
+export type TRole = "user" | "admin";

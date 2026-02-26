@@ -2,20 +2,26 @@ import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
 import { asyncHandler } from "../utils/asyncHandler";
 import { sendSuccess } from "../utils/response";
+import { StatusCodes } from "http-status-codes";
 
 export const AuthController = {
   register: asyncHandler(async (req: Request, res: Response) => {
     const { user, tokens } = await AuthService.register(
       req.body as { name: string; email: string; password: string },
     );
-    sendSuccess(res, { user, ...tokens }, 201, "Registration successful");
+    sendSuccess(
+      res,
+      { user, ...tokens },
+      StatusCodes.CREATED,
+      "Registration successful",
+    );
   }),
 
   login: asyncHandler(async (req: Request, res: Response) => {
     const { user, tokens } = await AuthService.login(
       req.body as { email: string; password: string },
     );
-    sendSuccess(res, { user, ...tokens }, 200, "Login successful");
+    sendSuccess(res, { user, ...tokens }, StatusCodes.OK, "Login successful");
   }),
 
   getMe: asyncHandler(async (req: Request, res: Response) => {
