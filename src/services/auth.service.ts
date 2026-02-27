@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { UserModel } from "../models/user.model";
+import { OAuth2Client } from "google-auth-library";
 import {
   AppError,
   NotFoundError,
@@ -8,9 +9,11 @@ import {
   ValidationError,
 } from "../errors/AppError";
 import { IUser } from "../types/user.types";
+import { UserService } from "./user.service";
 
 const JWT_SECRET = process.env["JWT_SECRET"] ?? "dev_secret_change_me";
 const JWT_EXPIRES_IN = process.env["JWT_EXPIRES_IN"] ?? "7d";
+const googleClient = new OAuth2Client(process.env["GOOGLE_CLIENT_ID"]);
 
 export interface TokenPayload {
   id: string;
@@ -94,5 +97,50 @@ export const AuthService = {
     } catch {
       throw new UnauthorizedError("Invalid or expired token");
     }
+  },
+
+  async verifyGoogleToken(idToken: string) {
+    console.log(idToken, "in verifyGoogleToken service");
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload() as {
+      name: string;
+      email: string;
+      sub: string;
+      picture: string;
+    };
+    if (!payload) {
+      throw new UnauthorizedError("Invalid Google token");
+    }
+
+    return payload;
+  },
+
+  async googleLogin(idToken: string) {
+    console.log(idToken, "in googleLogin service");
+    const payload = await this.verifyGoogleToken(idToken);
+    const { email, name, sub, picture } = payload;
+    if (!email) throw new ValidationError("Google account has no email");
+    let user = await UserService.getUserByEmail(email);
+    if (!user) {
+      user = await UserService.createUser({
+        name,
+        email,
+        password: "",
+        photo: picture,
+        role: "user",
+        provider: "google",
+        googleId: sub,
+      });
+    }
+
+    const { accessToken } = this.generateTokens(user);
+
+    const { password, ...safeUser } = user;
+
+    return { user: safeUser, accessToken };
   },
 };

@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { ROLES } from "../constants";
+import { PROVIDER, PROVIDERS, ROLES } from "../constants";
 import { IUser } from "../types/user.types";
 
 const userSchema = new Schema<IUser>(
@@ -18,9 +18,8 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: 6,
-      select: false, // never returned in queries by default
+      required: false,
+      select: false,
     },
     role: {
       type: String,
@@ -32,6 +31,16 @@ const userSchema = new Schema<IUser>(
       default: true,
     },
     photo: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    provider: {
+      type: String,
+      enum: PROVIDERS,
+      default: PROVIDER.LOCAL,
+    },
+    googleId: {
       type: String,
       required: false,
       default: "",

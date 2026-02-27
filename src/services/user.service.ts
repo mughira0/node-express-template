@@ -4,20 +4,23 @@
 
 import { UserModel } from "../models/user.model";
 import { NotFoundError, ValidationError } from "../errors/AppError";
-import { IUser } from "../types/user.types";
+import { IUser, TProvider, TRole } from "../types/user.types";
 
 export interface CreateUserInput {
   name: string;
   email: string;
   password: string;
-  role?: "user" | "admin";
+  role?: TRole;
+  provider: TProvider;
+  photo?: string;
+  googleId?: string;
 }
 
 export interface UpdateUserInput {
   name?: string;
   email?: string;
   isActive?: boolean;
-  role?: "user" | "admin";
+  role?: TRole;
 }
 
 export const UserService = {
@@ -31,9 +34,9 @@ export const UserService = {
     return user;
   },
 
-  async getUserByEmail(email: string): Promise<IUser> {
-    const user = await UserModel.findOne({ email }).select("-__v");
-    if (!user) throw new NotFoundError("User");
+  async getUserByEmail(email: string, isError = false): Promise<IUser | null> {
+    const user = await UserModel.findOne({ email }).lean();
+    if (!user && isError) throw new NotFoundError("User");
     return user;
   },
 
