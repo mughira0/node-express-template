@@ -8,7 +8,7 @@ import {
   UnauthorizedError,
   ValidationError,
 } from "../errors/AppError";
-import { IUser } from "../types/user.types";
+import { IUser } from "../types/schema.types";
 import { UserService } from "./user.service";
 
 const JWT_SECRET = process.env["JWT_SECRET"] ?? "dev_secret_change_me";

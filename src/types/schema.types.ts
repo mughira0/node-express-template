@@ -1,3 +1,5 @@
+import { Document, Schema, Types } from "mongoose";
+
 export interface IUser {
   _id: string;
   name: string;
@@ -14,3 +16,13 @@ export interface IUser {
 
 export type TRole = "user" | "admin";
 export type TProvider = "google" | "local";
+
+export interface ITeam extends Document {
+  name: string;
+  description?: string;
+  members: Schema.Types.ObjectId[];
+  createdBy: Schema.Types.ObjectId;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { PROVIDER, PROVIDERS, ROLES } from "../constants";
-import { IUser } from "../types/user.types";
+import { IUser } from "../types/schema.types";
 
 const userSchema = new Schema<IUser>(
   {

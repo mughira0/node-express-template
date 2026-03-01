@@ -1,27 +1,6 @@
-// ---------------------------------------------------------------------------
-// Business logic layer — all rules and orchestration live here.
-// ---------------------------------------------------------------------------
-
-import { UserModel } from "../models/user.model";
 import { NotFoundError, ValidationError } from "../errors/AppError";
-import { IUser, TProvider, TRole } from "../types/user.types";
-
-export interface CreateUserInput {
-  name: string;
-  email: string;
-  password: string;
-  role?: TRole;
-  provider: TProvider;
-  photo?: string;
-  googleId?: string;
-}
-
-export interface UpdateUserInput {
-  name?: string;
-  email?: string;
-  isActive?: boolean;
-  role?: TRole;
-}
+import { UserModel } from "../models/user.model";
+import { IUser } from "../types/schema.types";
 
 export const UserService = {
   async getAllUsers(): Promise<IUser[]> {
@@ -40,7 +19,7 @@ export const UserService = {
     return user;
   },
 
-  async createUser(input: CreateUserInput): Promise<IUser> {
+  async createUser(input: Partial<IUser>): Promise<IUser> {
     const existing = await UserModel.findOne({ email: input.email });
     if (existing) throw new ValidationError("Email already in use");
 
@@ -51,7 +30,7 @@ export const UserService = {
     return result as IUser;
   },
 
-  async updateUser(id: string, input: UpdateUserInput): Promise<IUser> {
+  async updateUser(id: string, input: Partial<IUser>): Promise<IUser> {
     const user = await UserModel.findByIdAndUpdate(
       id,
       { $set: input },

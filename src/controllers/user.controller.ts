@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { asyncHandler } from "../utils/asyncHandler";
 import { sendSuccess } from "../utils/response";
+import { IUser } from "../types/schema.types";
 
 export const UserController = {
   getUsers: asyncHandler(async (_req: Request, res: Response) => {
@@ -19,14 +20,7 @@ export const UserController = {
   }),
 
   createUser: asyncHandler(async (req: Request, res: Response) => {
-    const user = await UserService.createUser(
-      req.body as {
-        name: string;
-        email: string;
-        password: string;
-        role?: "user" | "admin";
-      },
-    );
+    const user = await UserService.createUser(req.body as Partial<IUser>);
     sendSuccess(res, user, 201, "User created");
   }),
 

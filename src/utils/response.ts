@@ -3,11 +3,15 @@ import { ApiResponse } from "../types/system.types";
 
 export function sendSuccess<T>(
   res: Response,
-  data: T,
+  data?: T,
   statusCode = 200,
   message?: string,
 ): void {
-  const response: ApiResponse<T> = { success: true, data, message };
+  const response: ApiResponse<T> = {
+    success: true,
+    ...(data && { data }),
+    message,
+  };
   res.status(statusCode).json(response);
 }
 

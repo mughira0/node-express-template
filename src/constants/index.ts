@@ -1,4 +1,4 @@
-import { TProvider, TRole } from "../types/user.types";
+import { TProvider, TRole } from "../types/schema.types";
 
 export const ROLE = {
   USER: "user" as TRole,
